@@ -1,10 +1,14 @@
 const workers = [];
 
+const addWorker = (filename) => {
+  workers.push({ filename, worker: new Worker(filename), free: true });
+};
+
 const createWorkerAndCall = async (filename, parameter) => {
   let i = workers.findIndex((w) => w.filename === filename && w.free);
   if (i === -1) {
-    i = workers.length;
-    workers.push({ filename, worker: new Worker(filename) });
+    addWorker(filename);
+    i = workers.length - 1;
   }
 
   return new Promise((resolve, reject) => {
@@ -18,11 +22,13 @@ const createWorkerAndCall = async (filename, parameter) => {
 };
 
 export const webCall = function (filename, parameter) {
-  if (arguments.length === 0 || arguments.length > 2) {
-    throw new Error('Wrong number of parameters for webCall(...)');
-  } else {
-    return arguments.length === 2
-      ? createWorkerAndCall(filename, parameter)
-      : (parameter) => createWorkerAndCall(filename, parameter);
+  switch (arguments.length) {
+    case 1:
+      addWorker(filename);
+      return (parameter) => createWorkerAndCall(filename, parameter);
+    case 2:
+      return createWorkerAndCall(filename, parameter);
+    default:
+      throw new Error('Wrong number of parameters for webCall(...)');
   }
 };
