@@ -11,6 +11,6 @@ module.exports = {
   },
   rules: {
     semi: ['off'],
-    spaceBeforeFunctionParen: false
+    spaceBeforeFunctionParen: 0
   }
 };
