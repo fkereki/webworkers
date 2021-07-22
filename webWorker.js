@@ -1,15 +1,17 @@
 const workers = [];
 
-const addWorker = (filename) => {
-  workers.push({ filename, worker: new Worker(filename), free: true });
+const getWorker = (filename) => {
+  const i = workers.findIndex((w) => w.filename === filename && w.free);
+  if (i === -1) {
+    workers.push({ filename, worker: new Worker(filename), free: true });
+    return workers.length - 1;
+  } else {
+    return i;
+  }
 };
 
 const createWorkerAndCall = async (filename, parameter) => {
-  let i = workers.findIndex((w) => w.filename === filename && w.free);
-  if (i === -1) {
-    addWorker(filename);
-    i = workers.length - 1;
-  }
+  const i = getWorker(filename);
 
   return new Promise((resolve, reject) => {
     workers[i].worker.onmessage = ({ data }) => {
@@ -24,7 +26,7 @@ const createWorkerAndCall = async (filename, parameter) => {
 export const webCall = function (filename, parameter) {
   switch (arguments.length) {
     case 1:
-      addWorker(filename);
+      getWorker(filename); /* preloading! */
       return (parameter) => createWorkerAndCall(filename, parameter);
     case 2:
       return createWorkerAndCall(filename, parameter);
