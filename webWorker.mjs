@@ -29,6 +29,8 @@ export const webCall = function (filename, parameter) {
       getWorker(filename); /* preloading! */
       return (parameter) => createWorkerAndCall(filename, parameter);
     case 2:
+      // if a worker doesn't receive parameters,
+      // to avoid preloading call it with an undefined argument
       return createWorkerAndCall(filename, parameter);
     default:
       throw new Error('Wrong number of parameters for webCall(...)');

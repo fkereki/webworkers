@@ -1,26 +1,24 @@
 import { webCall } from './webWorker.js';
 
+const FIBONACCI = 'workers/fibonacci.worker.js';
+const REVERSE_STRING = 'workers/reverseString.worker.js';
+
+const logSuccess = (i) => (v) => console.log('SUCCESS #' + i, v);
+const logFailure = (i) => (v) => console.log('FAILURE #' + i, v);
+
 (async () => {
-  webCall('workers/fibonacci.worker.js', 42).then((v) =>
-    console.log('FIBO', v)
-  );
+  webCall(FIBONACCI, 42).then(logSuccess('FIBO'));
 
   ['LONE', 'RANGER', 9, 22, true].forEach((v) => {
-    webCall('workers/reverseString.worker.js', v)
-      .then((x) => console.log('SUCCESS #1', x))
-      .catch((e) => console.log('ERROR #1', e));
+    webCall(REVERSE_STRING, v).then(logSuccess(1)).catch(logFailure(1));
   });
 
   setTimeout(() => {
-    webCall('workers/reverseString.worker.js', 'HOPALONG')
-      .then((x) => console.log('SUCCESS #2', x))
-      .catch((e) => console.log('ERROR #2', e));
-    webCall('workers/reverseString.worker.js', 'CASSIDY')
-      .then((x) => console.log('SUCCESS #3', x))
-      .catch((e) => console.log('ERROR #3', e));
+    webCall(REVERSE_STRING, 'HOPALONG').then(logSuccess(2)).catch(logFailure(2));
+    webCall(REVERSE_STRING, 'CASSIDY').then(logSuccess(3)).catch(logFailure(3));
   }, 5000);
 
-  const wc = webCall('workers/reverseString.worker.js');
+  const wc = webCall(REVERSE_STRING);
 
   console.log(await wc('GENE AUTRY'));
   console.log(await wc('RED RYDER'));

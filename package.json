@@ -9,11 +9,7 @@
   "author": "Federico Kereki",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^7.31.0",
-    "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.23.4",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.1.0",
-    "prettier": "^2.3.2"
+    "eslint": "^9.7.0",
+    "prettier": "^3.3.3"
   }
 }
